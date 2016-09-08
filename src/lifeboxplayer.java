@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -7,12 +8,15 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -208,7 +212,12 @@ public class lifeboxplayer extends JPanel implements ActionListener {
                 {
                     try {
                         FileInputStream fis = new FileInputStream(file);
-                        String newName = new File(localPath,file.getName()
+                        String newName;
+                        if (fileName.contains(".3gp"))
+                            newName = new File(localPath,file.getName()
+                                .split("\\.")[0]+".3gp").toString();
+                        else
+                            newName = new File(localPath,file.getName()
                                 .split("\\.")[0]+".mp4").toString();
                         int fileLength = fis.available();
                         byte[] fileBytes = new byte[fileLength];
@@ -265,6 +274,12 @@ public class lifeboxplayer extends JPanel implements ActionListener {
         }*/
         
         TAStatusLog.append("Finished.\n");
+        
+        try {
+            Desktop.getDesktop().open(new File(TFLocalPath.getText()));
+        } catch (Exception ex) {
+            TAStatusLog.append(ex.getMessage());
+        }
     }
 
     private static void createAndShowGUI() {
